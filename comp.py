@@ -14,12 +14,13 @@ class CompressedImage:
 
         #Here we just assume a grayscale image 8-bytes per pixel
         self.original_size=width*height*8
+        self.compress()
 
     def compress(self):
         """
         The compression works by dividing the original image into squares
         with a side length of box_size. Each square is either represented
-        by a single pixel value or that wavelet thing
+        by a single pixel value or the output of wavelet difference reduction
         """
         #The representation of our compressed image as a list of "boxes"
         img = []
