@@ -1,4 +1,6 @@
-function [cimage,cratio,mse,psnr] = compress_test(img, boxsize, threshold)
+function [ cimage,cratio,mse,psnr ] = perbox_wdr( img, boxsize, threshold )
+%PERBOX_WDR Summary of this function goes here
+%   Detailed explanation goes here
 [width, height] = size(img);
 if mod(width, boxsize) ~= 0 || mod(height,boxsize) ~= 0
     error('Image size not correctly divisible by boxsize');
@@ -16,9 +18,9 @@ for r = 1:boxsize:width
             box(:,:)=bmin+(bmax-bmin)/2;
             comp_ratio=comp_ratio+boxsize*boxsize;
         else
-            [comprat,bpp]=wcompress('c',box,'/dev/shm/tmp2.wdr','wdr','level',4);
+            [comprat,bpp]=wcompress('c',box,'/dev/shm/tmp2.wdr','aswdr','level',4);
             %fprintf('comprat %f, bpp %f\n', comprat,bpp);
-            wcompress('u','/dev/shm/tmp2.wdr');
+            box=wcompress('u','/dev/shm/tmp2.wdr');
             comp_ratio=comp_ratio+comprat;
         end
         cimage(r:r+boxsize-1,c:c+boxsize-1)=box(:,:);
@@ -26,13 +28,6 @@ for r = 1:boxsize:width
     end
 end 
 cratio=comp_ratio/boxes;
-mse=calc_mse(img,cimage);
-psnr=calc_psnr(img,cimage);
+[mse,psnr]=quantify(img,cimage);
 end
 
-function error=calc_mse(img1,img2)
-error=sum((img1(:)-img2(:)).^2)/(size(img1,1)*size(img1,2));
-end
-function psnr=calc_psnr(img1,img2)
-psnr=20*log10(255)-10*log10(calc_mse(img1,img2));
-end
