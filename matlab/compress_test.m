@@ -16,7 +16,7 @@ for r = 1:boxsize:width
             box(:,:)=bmin+(bmax-bmin)/2;
             comp_ratio=comp_ratio+boxsize*boxsize;
         else
-            [comprat,bpp]=wcompress('c',box,'/dev/shm/tmp2.wdr','spiht');
+            [comprat,bpp]=wcompress('c',box,'/dev/shm/tmp2.wdr','wdr','level',4);
             %fprintf('comprat %f, bpp %f\n', comprat,bpp);
             wcompress('u','/dev/shm/tmp2.wdr');
             comp_ratio=comp_ratio+comprat;
