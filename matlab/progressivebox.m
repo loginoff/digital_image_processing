@@ -7,17 +7,14 @@ if width ~= height
 end
 cimage = img;
 boxsize=width/2;
-fid=fopen('algorithm.log','w');
 while boxsize > 2
     for r=1:boxsize:width
         for c=1:boxsize:height
             box=cimage(r:r+boxsize-1,c:c+boxsize-1);
             bmin=min(box(:));
             bmax=max(box(:));
-            fprintf(fid,'boxsize: %d. min: %d, max: %d\n',boxsize,bmin,bmax);
             
             if (bmax-bmin) <= threshold
-                fprintf(fid,'wtf: %d\n',boxsize);
                 box(:,:)=bmin+(bmax-bmin)/2;
                 %comp_ratio=comp_ratio+boxsize*boxsize;
             end
@@ -26,9 +23,8 @@ while boxsize > 2
     end
     boxsize = boxsize/2;
 end
-fclose(fid);
-cratio=0;
-mse=0;
-psnr=0;
+cratio=wcompress('c',cimage,'test.wdr','wdr');
+cimage=uint8(wcompress('u','test.wdr'));
+[mse,psnr]=quantify(img,cimage);
 end
 
