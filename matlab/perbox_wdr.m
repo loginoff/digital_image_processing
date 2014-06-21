@@ -16,9 +16,9 @@ for r = 1:boxsize:width
 
         if bmax-bmin <= threshold
             box(:,:)=bmin+(bmax-bmin)/2;
-            comp_ratio=comp_ratio+boxsize*boxsize;
+            comp_ratio=comp_ratio+(1/(boxsize*boxsize))*100;
         else
-            [comprat,bpp]=wcompress('c',box,'/dev/shm/tmp2.wdr','wdr','level',4);
+            [comprat,bpp]=wcompress('c',box,'/dev/shm/tmp2.wdr','wdr','level',4,'wt',{'bior4.4',4,'zpd'});
             %fprintf('comprat %f, bpp %f\n', comprat,bpp);
             box=wcompress('u','/dev/shm/tmp2.wdr');
             delete('/dev/shm/tmp2.wdr');
