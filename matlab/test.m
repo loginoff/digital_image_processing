@@ -22,5 +22,9 @@ fprintf('Perbox WDR, CRATIO: %f, MSE: %f, PSNR %f\n', ratio,mse,psnr);
 %imshow(cimg);
 %end
 %%
-mse1=mse;
-psnr1=psnr;
+[cimg,ratio,mse,psnr]=cluster_wdr(lena_orig,64);
+fprintf('Cluster WDR, CRATIO: %f, MSE: %f, PSNR %f\n', ratio,mse,psnr);
+%%
+imshow(img);
+%%
+v=cluster_patch(lena_orig,16);
