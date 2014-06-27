@@ -1,14 +1,17 @@
-function [out_img,nrclusters] = cluster_img( img, threshold )
+function [out_img,nrclusters] = cluster_patch( img, threshold )
 width=size(img,1);
 height=size(img,2);
 visited=zeros(width,height);
 clusters=0;
+current_clusterx=zeros(1000);
+current_clustery=zeros(1000);
 for r=1:width
     for c=1:height
         if visited(r,c)==0
             clusters=clusters+1;
-            current_cluster=[];
+            clusterptr=0;
             color=img(r,c);
+            meancolor=double(0.0);
             stackx=[r];
             stacky=[c];
             stackptr=1;
@@ -24,23 +27,21 @@ for r=1:width
                     continue;
                  end
         
-                 idx=(x-1)*width+y;
-                 if size(current_cluster,1)==0
-                    comp=img(idx);
-                 else
-                    comp=img(current_cluster(end));
-                 end
-        
                  if abs(double(color) - double(img(x,y))) < threshold
-                    %current_cluster(end+1)=idx;
+                     clusterptr=clusterptr+1;
+                     current_clusterx(clusterptr)=x;
+                     current_clustery(clusterptr)=y;
+                     meancolor=double(meancolor)+double(img(x,y));
+                    
                     visited(x,y)=clusters;
+%                     img(x,y)=color;
                     
                     for i=-1:1
                         for j=-1:1
                             newx=x+i;
                             newy=y+j;
                             if newx==x && newy==y
-                                continue
+                                continue;
                             end
                             if newx<1 || newx>width || newy < 1 || newy > height
                                 continue;
@@ -54,13 +55,15 @@ for r=1:width
                         end
                     end
                  end
-                
-                
+            end
+            meancolor=double(meancolor)/double(clusterptr);
+            for i=1:clusterptr
+                img(current_clusterx(i),current_clustery(i))=uint8(meancolor);
             end
         end
     end
 end
-out_img=visited;
+out_img=img;
 nrclusters=clusters;
 end
 
